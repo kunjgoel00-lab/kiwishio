@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiwi Shio | Official Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&family=Syncopate:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --pink: #ffb7c5; --bright-pink: #ff85a1; --silk-pink: #ffcad4;
+            --glass: rgba(255, 255, 255, 0.96); --kiwi-green: #a4c639;
+            --rb-body: #1a1a1a; --rb-acc: #333; --glow-blue: #00d4ff;
+            --curtain-color: #ffb7c5;
+        }
+        body.rage-mode {
+            --pink: #8E1616; --bright-pink: #ff4d6d; --silk-pink: #4a0404;
+            --glass: rgba(20, 20, 20, 0.96); --rb-body: #ffffff; --rb-acc: #ffb7c5;
+            --curtain-color: #2e0202;
+            background: #0a0a0a !important; color: #eee;
+        }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body, html { 
+            margin: 0; padding: 0; font-family: 'Quicksand', sans-serif; 
+            background: #fff0f3; color: #444; scroll-behavior: smooth;
+            overflow-x: hidden; transition: background 0.8s; user-select: none;
+        }
+
+        /* --- THEATER CURTAINS --- */
+        #curtain-wrapper { position: fixed; inset: 0; z-index: 20000; display: flex; perspective: 2000px; pointer-events: none; }
+        .curtain {
+            width: 51%; height: 100%; background: var(--curtain-color);
+            background-image: repeating-linear-gradient(90deg, rgba(0,0,0,0.1) 0px, transparent 2px, rgba(255,255,255,0.05) 40px, rgba(0,0,0,0.2) 80px);
+            transition: transform 1.8s cubic-bezier(0.4, 0, 0.2, 1), background 0.8s;
+            box-shadow: inset 0 0 100px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center;
+            border-bottom: 15px solid gold;
+        }
+        .curtain-text { color: white; font-family: 'Syncopate'; font-size: 2.5rem; letter-spacing: 10px; text-shadow: 2px 2px 8px rgba(0,0,0,0.3); }
+        .curtain-open-left { transform: rotateY(-85deg) translateX(-105%); transform-origin: left; }
+        .curtain-open-right { transform: rotateY(85deg) translateX(105%); transform-origin: right; }
+
+        /* --- KIWI PHASE ANIMATION --- */
+        #kiwi-stage { position: fixed; inset: 0; z-index: 21000; display: none; align-items: center; justify-content: center; pointer-events: none; }
+        .kiwi-fruit { position: relative; width: 220px; height: 220px; display: flex; }
+        .kiwi-half { width: 110px; height: 220px; background: var(--kiwi-green); border: 6px solid #5d3a21; position: relative; overflow: hidden; }
+        .kiwi-half::before {
+            content: ''; position: absolute; top: 50%; width: 90px; height: 150px;
+            background: radial-gradient(ellipse at center, #ffffff 20%, transparent 70%), radial-gradient(circle, #000 2px, transparent 3px);
+            background-size: 100% 100%, 20px 20px; border-radius: 50%; opacity: 0.9; transform: translateY(-50%);
+        }
+        .k-left { border-radius: 110px 0 0 110px; border-right: none; transform-origin: right; }
+        .k-right { border-radius: 0 110px 110px 0; border-left: none; transform-origin: left; }
+        .blade-slash { position: absolute; width: 200%; height: 10px; background: #fff; box-shadow: 0 0 30px #fff; transform: rotate(-45deg) scaleX(0); z-index: 22000; opacity:0; }
+        .slicing .blade-slash { animation: slashKill 0.4s ease-out forwards; }
+        .slicing .k-left { animation: flyL 1.2s forwards; } .slicing .k-right { animation: flyR 1.2s forwards; }
+        .slamming .k-left { animation: slamL 0.8s forwards; } .slamming .k-right { animation: slamR 0.8s forwards; }
+        @keyframes slashKill { 0% { scaleX(0); opacity: 0; } 50% { scaleX(1); opacity: 1; } 100% { scaleX(1.5); opacity: 0; transform: rotate(-45deg) translate(100px, 100px); } }
+        @keyframes flyL { 100% { transform: translateX(-1200px) rotate(-90deg); } } @keyframes flyR { 100% { transform: translateX(1200px) rotate(90deg); } }
+        @keyframes slamL { 0% { transform: translateX(-1200px); } 100% { transform: translateX(0); } } @keyframes slamR { 0% { transform: translateX(1200px); } 100% { transform: translateX(0); } }
+
+        /* --- THE ORIGINAL RABBIT --- */
+        #rabbit-container { position: absolute; width: 80px; height: 60px; z-index: 1000; transition: all 3s ease-in-out; pointer-events: none; }
+        .rabbit-body { position: relative; width: 50px; height: 40px; background: var(--rb-body); border-radius: 50% 50% 40% 40%; }
+        .rabbit-body::after { content: ''; position: absolute; left: -8px; bottom: 8px; width: 15px; height: 15px; background: var(--rb-acc); border-radius: 50%; }
+        .rabbit-head { position: absolute; top: -20px; right: -8px; width: 38px; height: 38px; background: var(--rb-body); border-radius: 50%; }
+        .eye { position: absolute; top: 12px; width: 7px; height: 10px; background: var(--glow-blue); border-radius: 50%; box-shadow: 0 0 10px var(--glow-blue); }
+        .ear { position: absolute; top: -25px; width: 10px; height: 30px; background: var(--rb-acc); border-radius: 50% 50% 0 0; }
+        .carrot { position: absolute; top: 15px; right: -18px; width: 22px; height: 10px; background: #ff8c00; border-radius: 0 50% 50% 0; border-left: 4px solid green; animation: chew 0.3s infinite; }
+        @keyframes chew { 0%, 100% { transform: scaleX(1); } 50% { transform: scaleX(0.8); } }
+
+        /* --- UI HELPERS --- */
+        nav { 
+            position: fixed; top: 15px; left: 50%; transform: translateX(-50%); 
+            background: var(--glass); padding: 8px 15px; border-radius: 40px; 
+            z-index: 5000; border: 2px solid var(--pink); 
+            display: flex; gap: 8px; max-width: 90vw; overflow-x: auto; 
+            scrollbar-width: none; white-space: nowrap;
+        }
+        nav::-webkit-scrollbar { display: none; }
+        .glass-card { background: var(--glass); border-radius: 35px; border: 2px solid var(--pink); padding: 30px; margin-bottom: 30px; text-align: center; }
+        .btn-theme { 
+            background: white; border: 2px solid var(--pink); color: var(--bright-pink); 
+            padding: 10px 20px; border-radius: 25px; cursor: pointer; font-weight: 800; 
+            transition: 0.3s; text-decoration: none; display: inline-block; margin: 4px;
+        }
+        details { background: rgba(255,255,255,0.3); border-radius: 15px; margin: 8px 0; padding: 12px; border: 1px solid var(--pink); text-align: left; }
+        summary { font-weight: 700; cursor: pointer; list-style: none; display: flex; justify-content: space-between; color: var(--bright-pink); }
+        summary::after { content: '▼'; font-size: 0.7rem; transition: 0.3s; }
+        details[open] summary::after { transform: rotate(180deg); }
+        .petal { position: fixed; top: -50px; z-index: 25000; pointer-events: none; animation: fall linear forwards; }
+        .sakura { background: #ffb7c5; border-radius: 150% 0 150% 100%; }
+        .rose { background: #ff0000; border-radius: 50% 20% 50% 20%; }
+        @keyframes fall { 0% { transform: translateY(0vh) rotate(0deg) translateX(0px); opacity: 0; } 10% { opacity: 1; } 100% { transform: translateY(110vh) rotate(720deg) translateX(var(--drift)); opacity: 0; } }
+        #game-canvas { background: #87CEEB; border: 5px solid var(--pink); border-radius: 20px; width: 100%; max-width: 400px; display:block; margin: 0 auto; cursor: pointer; }
+        #canvas-wheel { border-radius: 50%; border: 8px solid var(--pink); transition: transform 4.5s cubic-bezier(0.15, 0, 0.15, 1); width: 100%; max-width: 300px; }
+    </style>
+</head>
+<body>
+
+    <div id="curtain-wrapper">
+        <div class="curtain left-curtain"><span class="curtain-text">KIWI</span></div>
+        <div class="curtain right-curtain"><span class="curtain-text">SHIO</span></div>
+    </div>
+
+    <div id="kiwi-stage">
+        <div class="blade-slash"></div>
+        <div class="kiwi-fruit"><div class="kiwi-half k-left"></div><div class="kiwi-half k-right"></div></div>
+    </div>
+
+    <div id="rabbit-container">
+        <div class="rabbit-body"><div class="rabbit-head"><div class="eye" style="left:8px;"></div><div class="eye" style="left:22px;"></div><div class="ear" style="left:8px; transform:rotate(-15deg);"></div><div class="ear" style="left:20px; transform:rotate(15deg);"></div><div class="carrot"></div></div></div>
+    </div>
+
+    <nav>
+        <a href="#intro" class="btn-theme">Intro</a>
+        <a href="#socials" class="btn-theme">Socials</a>
+        <a href="#games" class="btn-theme">Games</a>
+        <a href="#setup" class="btn-theme">Setup</a>
+        <a href="#faq" class="btn-theme">FAQ</a>
+        <button class="btn-theme" style="background:var(--bright-pink); color:white;" onclick="triggerPhase()">PHASE</button>
+    </nav>
+
+    <div style="margin-top:100px; max-width:900px; margin:auto; padding:15px;">
+        <div class="glass-card" id="intro">
+            <h1 id="title" style="color:var(--bright-pink); font-family:'Syncopate';">Welcome SweetBuns!</h1>
+            <p>Welcome to the cozy corner of the internet! I'm Kiwi Shio, a 20-year-old creator from India who finds magic in the craziest, cutest, and sometimes most chaotic gaming moments. Whether I’m navigating the tactical world of Valorant or just yapping with my favorite 'SweetBuns,' my goal is always the same: to make you smile. I’m a little unpredictable, a lot of fun, and always happy to have you along for the journey. Stick around, stay comfy, and let’s make some memories together! 🌸✨</p>
+        </div>
+
+        <div class="glass-card" id="socials">
+            <h2 style="color:var(--bright-pink); font-family:'Syncopate';">My Socials</h2>
+            <a href="https://youtube.com/@kiwishioo?si=H-Pia9_BO2_KkIGM" target="_blank" class="btn-theme" style="background:#FF0000; color:white; border:none;">YouTube</a>
+            <a href="https://twitch.tv/kiwishio23" target="_blank" class="btn-theme" style="background:#9146FF; color:white; border:none;">Twitch</a>
+            <a href="https://www.instagram.com/kiwi.shio" target="_blank" class="btn-theme" style="background:#E4405F; color:white; border:none;">Instagram</a>
+            <a href="https://discord.gg/KUYy9EB2zq" target="_blank" class="btn-theme" style="background:#7289DA; color:white; border:none;">Discord</a>
+            <a href="https://open.spotify.com/playlist/5pm5exQn0qxGvnF6QySBsY?si=9df2288b467b41ad5" target="_blank" class="btn-theme" style="background:#1DB954; color:white; border:none;">Spotify</a>
+        </div>
+
+        <div class="glass-card" id="games">
+            <h2 style="color:var(--bright-pink); font-family:'Syncopate';">few games I play</h2>
+            <a href="https://playvalorant.com" target="_blank" class="btn-theme">Valorant</a>
+            <a href="https://minecraft.net" target="_blank" class="btn-theme">Minecraft</a>
+            <a href="https://www.rockstargames.com/gta-v" target="_blank" class="btn-theme">GTA V</a>
+            <a href="https://store.steampowered.com/app/2501610" target="_blank" class="btn-theme">Chained Together</a>
+            <p style="font-weight:bold; color:var(--bright-pink);">and few more...</p>
+        </div>
+
+        <div class="glass-card" id="setup">
+            <h2 style="color:var(--bright-pink); font-family:'Syncopate';">My Setup</h2>
+            <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:10px;">
+                <a href="https://www.amazon.in/s?k=Fifine+K688" target="_blank" class="btn-theme">Mic: Fifine K688</a>
+                <a href="https://www.amazon.in/s?k=Razer+Basilisk+V3" target="_blank" class="btn-theme">Mouse: Razer Basilisk V3</a>
+                <a href="https://www.amazon.in/s?k=Redragon+K556" target="_blank" class="btn-theme">Keyboard: Redragon K556</a>
+                <a href="https://www.amazon.in/s?k=Gigabyte+G27F" target="_blank" class="btn-theme">Monitor: Gigabyte G27F</a>
+                <a href="https://www.amazon.in/s?k=Razer+Barracuda" target="_blank" class="btn-theme">Headphone: Razer Barracuda</a>
+                <a href="https://www.amazon.in/s?k=RTX+4060ti" target="_blank" class="btn-theme">GPU: RTX 4060 Ti</a>
+                <a href="https://www.amazon.in/s?k=Ryzen+5+7600X" target="_blank" class="btn-theme">CPU: Ryzen 5 7600X</a>
+            </div>
+        </div>
+
+        <div class="glass-card" id="faq">
+            <h2 style="color:var(--bright-pink); font-family:'Syncopate';">FAQ</h2>
+            <details><summary>1. Why is there a rabbit on her website?</summary><p>Kiwi recently lost her rabbit so it's a tribute to Tikku. Rest in peace little soul 🕊️</p></details>
+            <details><summary>2. Why did she choose to be a faceless creator?</summary><p>Anonymity lets her build a brand around voice and skill.</p></details>
+            <details><summary>3. Does she ever plan on doing a face reveal?</summary><p>A major mystery for her sub milestones!</p></details>
+            <details><summary>4. Is she a full-time streamer or a student?</summary><p>Fans ask about how she balances life behind the screen.</p></details>
+            <details><summary>5. How does she handle 'toxic' players?</summary><p>She is known for being confident and "savage" to trolls.</p></details>
+            <details><summary>6. What games does she play besides Valorant?</summary><p>Curiosity is high for future variety streams.</p></details>
+            <details><summary>7. How can fans support her without meetups?</summary><p>Discord, digital fan art, and social support.</p></details>
+        </div>
+
+        <div class="glass-card">
+            <h2 style="color:var(--bright-pink); font-family:'Syncopate';">Support & Business</h2>
+            <p><strong>Business Email:</strong> business.kiwishio@gmail.com</p>
+            <p><strong>UPI ID:</strong> <span onclick="playPassSound()" style="color:var(--bright-pink); font-weight:bold; cursor:pointer; border-bottom: 2px dashed;">kiwishioo@axl</span></p>
+        </div>
+
+        <div class="glass-card"><h2 style="color:var(--bright-pink); font-family:'Syncopate';">Lucky Wheel</h2><canvas id="canvas-wheel" width="300" height="300"></canvas><br><button class="btn-theme" onclick="spinWheel()">SPIN FULL POWER</button></div>
+
+        <div class="glass-card"><h2 style="color:var(--bright-pink); font-family:'Syncopate';">Flappy Kiwi 🥝</h2><canvas id="game-canvas" width="400" height="500"></canvas></div>
+    </div>
+
+    <script>
+        let isRage = false, wheelRot = 0, bird, pipes, frame, running = false;
+        const passAudio = new Audio('https://files.catbox.moe/vpiphi.mp3'), hitAudio = new Audio('https://files.catbox.moe/k2hx6h.mp3');
+        const wheelAudios = [new Audio('https://files.catbox.moe/89j2tj.mp3'), new Audio('https://files.catbox.moe/7vg1ul.mp3')];
+        const canvas = document.getElementById('game-canvas'), ctx = canvas.getContext('2d');
+
+        function triggerPhase() {
+            const l = document.querySelector('.left-curtain'), r = document.querySelector('.right-curtain'), stage = document.getElementById('kiwi-stage');
+            l.classList.remove('curtain-open-left'); r.classList.remove('curtain-open-right');
+            setTimeout(() => {
+                isRage = !isRage; document.body.classList.toggle('rage-mode');
+                document.getElementById('title').innerText = "Hey sweetbuns";
+                stage.style.display = 'flex'; stage.className = isRage ? 'slicing' : 'slamming';
+                setTimeout(() => { stage.style.display = 'none'; l.classList.add('curtain-open-left'); r.classList.add('curtain-open-right'); }, 1500);
+            }, 1800);
+        }
+
+        function spawnPetal() {
+            const p = document.createElement('div'); p.className = 'petal ' + (isRage ? 'rose' : 'sakura');
+            p.style.left = Math.random() * 100 + 'vw';
+            p.style.width = p.style.height = (Math.random() * 15 + 10) + 'px';
+            p.style.setProperty('--drift', (Math.random() * 300 - 150) + 'px');
+            p.style.animationDuration = (Math.random() * 3 + 4) + 's';
+            document.body.appendChild(p); setTimeout(() => p.remove(), 7000);
+        }
+        setInterval(spawnPetal, 500);
+
+        function moveRb() {
+            const rb = document.getElementById('rabbit-container');
+            rb.style.left = Math.random() * (window.innerWidth - 80) + 'px';
+            rb.style.top = Math.random() * (document.body.scrollHeight - 80) + 'px';
+            setTimeout(moveRb, 6000);
+        }
+
+        function spinWheel() {
+            wheelRot += 1800 + Math.random() * 360;
+            document.getElementById('canvas-wheel').style.transform = `rotate(${wheelRot}deg)`;
+            setTimeout(() => { wheelAudios[Math.floor(Math.random()*2)].play(); }, 4500);
+        }
+
+        function playPassSound() { passAudio.currentTime = 0; passAudio.play(); }
+
+        function initGame() { bird = { x: 50, y: 150, v: 0 }; pipes = []; frame = 0; running = true; loop(); }
+        function loop() {
+            if(!running) return; ctx.clearRect(0,0,400,500); bird.v += 0.6; bird.y += bird.v;
+            ctx.font = "30px Arial"; ctx.fillText("🥝", bird.x, bird.y);
+            if(frame % 100 === 0) pipes.push({ x: 400, t: Math.random()*200+50, passed: false });
+            pipes.forEach(p => {
+                p.x -= 3; ctx.fillStyle = "#5d3a21"; ctx.fillRect(p.x, 0, 50, p.t); ctx.fillRect(p.x, p.t+150, 50, 500);
+                if(bird.x+20 > p.x && bird.x < p.x+50 && (bird.y-20 < p.t || bird.y > p.t+150)) { running = false; hitAudio.play(); }
+                if(!p.passed && p.x+50 < bird.x) { p.passed = true; playPassSound(); }
+            });
+            if(bird.y > 500 || bird.y < 0) { running = false; hitAudio.play(); }
+            frame++; requestAnimationFrame(loop);
+        }
+        canvas.addEventListener('mousedown', (e) => { e.preventDefault(); if(!running) initGame(); else bird.v = -8; });
+
+        window.onload = () => {
+            moveRb();
+            setTimeout(() => { document.querySelector('.left-curtain').classList.add('curtain-open-left'); document.querySelector('.right-curtain').classList.add('curtain-open-right'); }, 1000);
+            const wctx = document.getElementById('canvas-wheel').getContext('2d'), colors = ['#ffcad4', '#ffb7c5', '#ffcad4', '#ffb7c5'];
+            for(let i=0; i<4; i++) {
+                wctx.beginPath(); wctx.moveTo(150,150); wctx.arc(150,150,150, i*Math.PI/2, (i+1)*Math.PI/2);
+                wctx.fillStyle = colors[i]; wctx.fill();
+            }
+        };
+    </script>
+</body>
+  </html>
+  
