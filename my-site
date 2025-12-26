@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiwi Shio | Official Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --pink: #ffb7c5;
+            --bright-pink: #ff85a1;
+            --silk-pink: #ffcad4;
+            --glass: rgba(255, 255, 255, 0.96);
+            --glow-blue: #00d4ff;
+            --sakura: #ffb7c5;
+        }
+
+        * { box-sizing: border-box; }
+        body, html { 
+            margin: 0; padding: 0; font-family: 'Quicksand', sans-serif; 
+            background: #fff0f3; color: #444; scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+
+        /* --- AUTOMATIC SILK CURTAINS --- */
+        #curtain-wrapper {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 10000; display: flex; perspective: 1200px;
+        }
+        .curtain {
+            position: relative; width: 50%; height: 100%;
+            background: var(--silk-pink);
+            background-image: repeating-linear-gradient(90deg, rgba(255,255,255,0.4) 0px, rgba(0,0,0,0.05) 25px, rgba(255,255,255,0.4) 50px);
+            display: flex; align-items: center; justify-content: center;
+            transition: all 2.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: inset 0 0 80px rgba(255, 133, 161, 0.3);
+            border-bottom: 10px solid gold;
+        }
+        .curtain-text { color: white; font-size: 3.5rem; font-weight: bold; text-shadow: 2px 2px 10px var(--bright-pink); letter-spacing: 8px; }
+        .curtain-open-left { transform: translateX(-100%) rotateY(15deg); }
+        .curtain-open-right { transform: translateX(100%) rotateY(-15deg); }
+
+        /* --- 3-SECOND RABBIT (TRIBUTE TO TIKKU) --- */
+        #rabbit-container { 
+            position: absolute; width: 65px; height: 60px; z-index: 1000; 
+            transition: all 3s ease-in-out; 
+            pointer-events: none; 
+        }
+        .rabbit-body { position: relative; width: 45px; height: 35px; background: #1a1a1a; border-radius: 50% 50% 40% 40%; }
+        .rabbit-body::after { content: ''; position: absolute; left: -5px; bottom: 8px; width: 14px; height: 14px; background: white; border-radius: 50%; box-shadow: 0 0 5px white; }
+        .rabbit-head { position: absolute; top: -15px; right: -5px; width: 32px; height: 32px; background: #1a1a1a; border-radius: 50%; }
+        .eye { position: absolute; top: 10px; width: 6px; height: 8px; background: var(--glow-blue); border-radius: 50%; box-shadow: 0 0 12px var(--glow-blue), 0 0 4px white; }
+        .eye.left { left: 6px; } .eye.right { left: 18px; }
+        .ear { position: absolute; top: -18px; width: 9px; height: 22px; background: #1a1a1a; border-radius: 50% 50% 0 0; }
+        .ear.left { left: 7px; transform: rotate(-15deg); } .ear.right { left: 17px; transform: rotate(15deg); }
+        .carrot { position: absolute; top: 15px; right: -12px; width: 18px; height: 8px; background: #ff8c00; border-radius: 0 50% 50% 0; display: none; }
+        .eating .carrot { display: block; }
+        .eating .rabbit-head { animation: chew 0.5s infinite; }
+        @keyframes chew { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+
+        /* --- UI COMPONENTS --- */
+        nav { position: fixed; top: 15px; left: 50%; transform: translateX(-50%); background: var(--glass); padding: 12px 30px; border-radius: 40px; display: flex; gap: 20px; z-index: 5000; border: 2px solid var(--pink); box-shadow: 0 5px 20px rgba(255, 183, 197, 0.4); }
+        nav a { color: var(--bright-pink); text-decoration: none; font-weight: 700; }
+        .main-container { max-width: 950px; margin: 100px auto 50px; padding: 20px; position: relative; z-index: 5; }
+        .glass-card { background: var(--glass); border-radius: 35px; border: 2px solid var(--pink); padding: 40px; margin-bottom: 35px; text-align: center; box-shadow: 0 10px 30px rgba(255, 183, 197, 0.2); }
+        .chip { padding: 14px 28px; border-radius: 25px; text-decoration: none; color: white; font-weight: 800; cursor: pointer; display: inline-block; border: none; }
+        .chip:hover { animation: bunnyHop 0.4s ease; }
+        @keyframes bunnyHop { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+        .game-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-top: 20px; }
+        .game-link { background: white; border: 2px solid var(--pink); padding: 12px; border-radius: 15px; text-decoration: none; color: var(--bright-pink); font-weight: bold; font-size: 0.85rem; }
+
+        .setup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-top: 25px; }
+        .part-card { background: white; padding: 18px; border-radius: 20px; border: 1.5px solid var(--pink); display: flex; justify-content: space-between; text-decoration: none; color: #444; transition: 0.3s; }
+        .part-card:hover { transform: scale(1.02); border-color: var(--bright-pink); }
+
+        .faq-item { background: white; border-radius: 20px; margin-bottom: 12px; border: 1px solid var(--pink); text-align: left; }
+        .faq-btn { width: 100%; padding: 18px; background: none; border: none; display: flex; justify-content: space-between; align-items: center; cursor: pointer; color: var(--bright-pink); font-weight: 700; text-align: left; }
+        .faq-content { max-height: 0; overflow: hidden; transition: 0.4s; padding: 0 18px; color: #666; font-size: 0.95rem; line-height: 1.6; }
+        .faq-item.open .faq-content { max-height: 500px; padding-bottom: 18px; }
+
+        /* MINI GAMES UI */
+        #game-container { position: relative; width: 320px; height: 400px; margin: 0 auto; background: #ffe5ec; border-radius: 25px; border: 5px solid white; overflow: hidden; cursor: pointer; }
+        #canvas-wheel { width: 280px; height: 280px; transition: 5s cubic-bezier(0.1, 0, 0, 1); border-radius: 50%; }
+        .wheel-pointer { width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid #444; margin: 0 auto -10px; position: relative; z-index: 10; }
+
+        /* VISIBLE SAKURA PETALS */
+        .petal { position: fixed; background: var(--sakura); border-radius: 150% 0 150% 0; z-index: 1; pointer-events: none; animation: fall linear infinite; opacity: 0.8; box-shadow: 0 0 5px rgba(255, 183, 197, 0.5); }
+        @keyframes fall { 0% { transform: translateY(-10vh) rotate(0); } 100% { transform: translateY(110vh) rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div id="curtain-wrapper">
+        <div class="curtain left-curtain"><span class="curtain-text">KIWI</span></div>
+        <div class="curtain right-curtain"><span class="curtain-text">SHIO</span></div>
+    </div>
+
+    <div id="rabbit-container">
+        <div class="rabbit-body"><div class="rabbit-head"><div class="eye left"></div><div class="eye right"></div><div class="ear left"></div><div class="ear right"></div><div class="carrot"></div></div></div>
+    </div>
+
+    <nav>
+        <a href="#hero">Home</a>
+        <a href="#social-page">Socials</a>
+        <a href="#rig">Setup</a>
+        <a href="#faq">FAQ</a>
+    </nav>
+
+    <div class="main-container">
+        <div class="glass-card" id="hero">
+            <h1 style="color:var(--bright-pink); font-size: 2.5rem; margin-bottom:15px;">Welcome SweetBuns!</h1>
+            <p style="line-height:1.8; font-size: 1.1rem;">
+                Welcome to the cozy corner of the internet! I'm Kiwi Shio, a 20-year-old creator from India who finds magic in the craziest, cutest, and sometimes most chaotic gaming moments. Whether I’m navigating the tactical world of Valorant or just yapping with my favorite 'SweetBuns,' my goal is always the same: to make you smile. I’m a little unpredictable, a lot of fun, and always happy to have you along for the journey. Stick around, stay comfy, and let’s make some memories together! 🌸✨
+            </p>
+        </div>
+
+        <div class="glass-card" id="social-page">
+            <h2>Social Handles</h2>
+            <div class="social-flex" style="display:flex; flex-wrap:wrap; justify-content:center; gap:12px;">
+                <a href="https://youtube.com/@kiwishioo?si=DSxsHAZDi7JpJaUt" target="_blank" class="chip" style="background:#FF0000;">YouTube</a>
+                <a href="https://twitch.tv/kiwishio23" target="_blank" class="chip" style="background:#9146FF;">Twitch</a>
+                <a href="https://discord.gg/53nq5MAP4U" target="_blank" class="chip" style="background:#7289DA;">Discord</a>
+                <a href="https://instagram.com/kiwi.shio" target="_blank" class="chip" style="background:#E4405F;">Instagram</a>
+                <a href="https://open.spotify.com/playlist/5pm5exQn0qxGvnF6QySBsY?si=9df2288b467b41ad" target="_blank" class="chip" style="background:#1DB954;">Spotify</a>
+            </div>
+            
+            <h3 style="margin-top:40px; color:var(--bright-pink);">These are few games which I play</h3>
+            <div class="game-grid">
+                <a href="https://playvalorant.com" target="_blank" class="game-link">Valorant</a>
+                <a href="https://grounded.obsidian.net" target="_blank" class="game-link">Grounded</a>
+                <a href="https://minecraft.net" target="_blank" class="game-link">Minecraft</a>
+                <a href="https://www.stumbleguys.com" target="_blank" class="game-link">Stumble Guys</a>
+                <a href="https://store.steampowered.com/app/2501610" target="_blank" class="game-link">Chained Together</a>
+                <a href="https://store.steampowered.com/app/1908070" target="_blank" class="game-link">Kamla</a>
+                <a href="https://play.google.com/store/apps/details?id=com.CAESARUM.SpecimenZero" target="_blank" class="game-link">Specimen Zero</a>
+            </div>
+            <p style="font-style: italic; color: #888;">...and few more, and others, and other games also!</p>
+        </div>
+
+        <div class="glass-card" id="rig">
+            <h2>The Full Rig</h2>
+            <div class="setup-grid">
+                <a href="https://www.amazon.in/s?k=Ryzen+5+5600GT" target="_blank" class="part-card"><strong>CPU:</strong> Ryzen 5 5600GT <span>BUY</span></a>
+                <a href="https://www.amazon.in/s?k=RTX+4060ti" target="_blank" class="part-card"><strong>GPU:</strong> RTX 4060ti <span>BUY</span></a>
+                <a href="https://www.amazon.in/s?k=T-Force+32GB+RAM" target="_blank" class="part-card"><strong>RAM:</strong> T-Force 32GB <span>BUY</span></a>
+                <a href="https://www.amazon.in/s?k=MSI+B550M" target="_blank" class="part-card"><strong>MOBO:</strong> MSI B550M <span>BUY</span></a>
+                <a href="https://www.amazon.in/s?k=Gigabyte+G27F" target="_blank" class="part-card"><strong>Monitor:</strong> Gigabyte G27F <span>BUY</span></a>
+                <a href="https://www.amazon.in/s?k=Fifine+K688" target="_blank" class="part-card"><strong>Mic:</strong> Fifine K688 <span>BUY</span></a>
+                <a href="https://www.amazon.in/s?k=Razer+Basilisk+V3" target="_blank" class="part-card"><strong>Mouse:</strong> Razer Basilisk V3 <span>BUY</span></a>
+            </div>
+        </div>
+
+        <div class="glass-card">
+            <button class="chip" id="audioBtn" style="background:#444; margin-bottom:20px;" onclick="enableAudio()">🎵 ENABLE AUDIO</button>
+            <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:40px;">
+                <div>
+                    <h3 style="color:var(--bright-pink)">Lucky Wheel</h3>
+                    <div class="wheel-pointer"></div>
+                    <canvas id="canvas-wheel" width="300" height="300"></canvas><br>
+                    <button class="chip" style="background:var(--bright-pink); margin-top:15px;" onclick="spin()">SPIN!</button>
+                </div>
+                <div>
+                    <h3 style="color:var(--bright-pink)">Progression Bird</h3>
+                    <div id="game-container" onclick="jump()">
+                        <div id="score-display" style="position:absolute; top:10px; width:100%; color:white; font-size:30px; font-weight:bold; text-shadow:2px 2px #000;">0</div>
+                        <canvas id="gameCanvas" width="320" height="400"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass-card" id="faq">
+            <h2>FAQ Hub</h2>
+            <div class="faq-item"><button class="faq-btn" onclick="tF(this)">1. Who are the other creators she frequently streams with? <span>▼</span></button><div class="faq-content">She is often seen collaborating with ScoutOP and Kaash Plays (RV There Yet), Sensei (Carry The Glass), and members of Team XSpark (RNTX).</div></div>
+            <div class="faq-item"><button class="faq-btn" onclick="tF(this)">2. Why the rabbit is on her website? <span>▼</span></button><div class="faq-content">Kiwi recently lost her rabbit—it's a tribute to Tikku. Rest in peace little soul 🕊️</div></div>
+            <div class="faq-item"><button class="faq-btn" onclick="tF(this)">3. Does she ever plan on doing a face reveal? <span>▼</span></button><div class="faq-content">This is the most "spammed" question! For now, she keeps it a mystery to maintain the intrigue of the faceless streamer vibe.</div></div>
+            <div class="faq-item"><button class="faq-btn" onclick="tF(this)">4. Is she a full-time streamer or a student? <span>▼</span></button><div class="faq-content">Fans often ask how she balances her schedule. She keeps her education/career "in the shadows" while giving her all to the community.</div></div>
+            <div class="faq-item"><button class="faq-btn" onclick="tF(this)">5. How does she handle 'toxic' players while being anonymous? <span>▼</span></button><div class="faq-content">She stays confident and "savage" in her replies to trolls, never letting them affect her personal life behind the screen.</div></div>
+            <div class="faq-item"><button class="faq-btn" onclick="tF(this)">6. What games does she play besides Valorant? <span>▼</span></button><div class="faq-content">While known for Valo, she enjoys variety gaming and "Just Chatting" where her personality truly shines.</div></div>
+            <div class="faq-item"><button class="faq-btn" onclick="tF(this)">7. How can fans support her if she doesn't do meet-and-greets? <span>▼</span></button><div class="faq-content">You can connect via Discord, exclusive merch, and digital fan-art showcases to stay close to the community!</div></div>
+        </div>
+
+        <div class="glass-card">
+            <h2 style="color:var(--bright-pink)">Support & Business</h2>
+            <p>Support the stream and the dream:</p>
+            <div style="background: #fff; border: 2px dashed var(--pink); display: inline-block; padding: 10px 20px; border-radius: 15px; font-weight: bold; font-size: 1.2rem; color: #444; margin-bottom: 20px;">
+                UPI ID: kiwishioo@axl
+            </div>
+            <hr style="border:0; height:1px; background:var(--pink); margin: 20px 0;">
+            <h3>Business Contact</h3>
+            <p>For sponsorships & brand deals:</p>
+            <p><a href="mailto:kiwishio.business@gmail.com" style="color: var(--bright-pink); font-weight: bold; text-decoration: none;">kiwishio.business@gmail.com</a></p>
+        </div>
+    </div>
+
+    <script>
+        // AUTO OPEN CURTAINS AFTER 2 SECONDS
+        window.onload = () => {
+            setTimeout(() => {
+                document.querySelector('.left-curtain').classList.add('curtain-open-left');
+                document.querySelector('.right-curtain').classList.add('curtain-open-right');
+                setTimeout(() => document.getElementById('curtain-wrapper').style.display='none', 2500);
+            }, 2000);
+        };
+
+        function tF(btn) { btn.parentElement.classList.toggle('open'); }
+
+        // RABBIT LOGIC
+        const rb = document.getElementById('rabbit-container');
+        function moveRb() {
+            rb.classList.remove('eating');
+            const x = Math.random() * (window.innerWidth - 70);
+            const y = Math.random() * (document.body.scrollHeight - 70);
+            rb.style.left = x + 'px'; rb.style.top = y + 'px';
+            setTimeout(() => {
+                rb.classList.add('eating');
+                setTimeout(moveRb, 8000); 
+            }, 3000); 
+        } moveRb();
+
+        // CHERRY BLOSSOM PETALS
+        setInterval(() => {
+            const p = document.createElement('div'); p.className = 'petal';
+            p.style.left = Math.random()*100+'vw'; p.style.width = p.style.height = (Math.random()*8 + 8) + 'px';
+            p.style.animationDuration = (Math.random()*4 + 4) + 's';
+            document.body.appendChild(p);
+            setTimeout(() => p.remove(), 8000);
+        }, 500);
+
+        // GAMES LOGIC
+        let audioOk = false;
+        const wS = [new Audio("https://files.catbox.moe/89j2tj.mp3"), new Audio("https://files.catbox.moe/7vg1ul.mp3"), new Audio("https://files.catbox.moe/2fbg2i.mp3"), new Audio("https://files.catbox.moe/mf7ra6.mp3")];
+        const bH = new Audio("https://files.catbox.moe/k2hx6h.mp3"), bP = new Audio("https://files.catbox.moe/vpiphi.mp3");
+        function enableAudio() { audioOk = true; document.getElementById('audioBtn').innerText="✅ READY"; }
+        function playInst(s) { if(audioOk) { s.pause(); s.currentTime=0; s.play(); } }
+
+        const wC = document.getElementById('canvas-wheel'), wX = wC.getContext('2d');
+        for(let i=0; i<4; i++){
+            wX.fillStyle = i%2 ? "#ffb7c5" : "#ff85a1";
+            wX.beginPath(); wX.moveTo(150,150); wX.arc(150,150,140,i*Math.PI/2,(i+1)*Math.PI/2); wX.fill();
+        }
+        function spin() { 
+            const r = Math.floor(Math.random()*4); 
+            wC.style.transform = `rotate(-${(r*90)+3600}deg)`; 
+            setTimeout(() => playInst(wS[r]), 5000); 
+        }
+
+        const gc = document.getElementById('gameCanvas'), gx = gc.getContext('2d');
+        let bY = 200, bV = 0, pipes = [], score = 0, started = false;
+        function createP() { pipes.push({ x: 320, h: Math.random()*150+50, passed: false }); }
+        createP();
+        function jump() { started = true; bV = -5; }
+        function loop() {
+            gx.clearRect(0,0,320,400);
+            if(started) {
+                bV += 0.22; bY += bV;
+                let speed = 2 + (Math.floor(score/5)*0.5);
+                pipes.forEach(p => {
+                    p.x -= speed;
+                    gx.fillStyle="#ffb7c5"; gx.fillRect(p.x, 0, 45, p.h); gx.fillRect(p.x, p.h+150-Math.min(50, score*2), 45, 400);
+                    if(40 > p.x && 40 < p.x+45 && (bY < p.h || bY > p.h+150-Math.min(50, score*2))) { playInst(bH); started=false; bY=200; score=0; pipes=[{x:320,h:100}]; document.getElementById('score-display').innerText="0"; }
+                    if(p.x < 40 && !p.passed) { p.passed=true; score++; document.getElementById('score-display').innerText=score; playInst(bP); }
+                });
+                if(pipes[0].x < -50) pipes.shift();
+                if(pipes[pipes.length-1].x < 180) createP();
+                if(bY > 400 || bY < 0) { playInst(bH); started=false; bY=200; score=0; }
+            }
+            gx.fillStyle="#ff85a1"; gx.beginPath(); gx.arc(40, bY, 12, 0, Math.PI*2); gx.fill();
+            requestAnimationFrame(loop);
+        } loop();
+    </script>
+</body>
+</html>
